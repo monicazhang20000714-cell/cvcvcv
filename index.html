@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>作品集 | 课程研发专家</title>
+    <title>JINGWEN | 课程研发专家作品集</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -13,15 +13,11 @@
     <style>
         :root { --brand-green: #2d5a3f; --soft-green: #f2f7f2; }
         [x-cloak] { display: none !important; }
-        
-        /* 基础样式优化：防止左右溢出 */
-        html, body { 
-            max-width: 100%; 
-            overflow-x: hidden; 
-            background-color: #fafaf9; 
-            font-family: 'PingFang SC', sans-serif;
-            scroll-behavior: smooth;
-        }
+        body { font-family: 'PingFang SC', sans-serif; background-color: #fafaf9; scroll-behavior: smooth; }
+
+        /* 滚动锁定样式 */
+        .no-scroll { overflow: hidden !important; position: fixed; width: 100%; height: 100%; top: 0; left: 0; }
+        /* 防止 body 固定滚动条后布局偏移补偿（可选）保留更好体验，此处不做复杂补偿 */
 
         .blob {
             position: absolute; width: 600px; height: 600px;
@@ -30,48 +26,101 @@
         }
         @keyframes move { from { transform: translate(-10%, -5%); } to { transform: translate(15%, 15%); } }
 
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(45, 90, 63, 0.05); }
+        /* 导航栏玻璃效果优化 - 更清晰且不遮挡内容 */
+        .glass { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .resume-line::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 1px; background: linear-gradient(to bottom, #2d5a3f, transparent); }
+        [data-aos] { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important; }
 
-        /* 弹窗核心适配 */
-        .portfolio-modal { 
-            background: #fafaf9; 
-            width: 100%; 
-            height: 100%;
-            max-height: 100vh;
-        }
-        
-        @media (min-width: 768px) {
-            .portfolio-modal { 
-                width: 90%; 
-                height: 90vh; 
-                border-radius: 40px;
+        /* 作品集Modal专属样式 + 移动端全屏适配 */
+        .portfolio-modal { background: linear-gradient(135deg, #fafaf9 0%, #f2f7f2 100%); }
+
+        /* 移动端全屏弹窗：充分利用空间，无圆角，无边界限制 */
+        @media (max-width: 768px) {
+            .portfolio-modal {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
+            /* 内部内容区可微调边距保障内容不贴边太紧，但保持原有风格仅全屏无圆角，保留原px-10 */
+            .modal-inner-content {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
         }
 
-        /* 图片卡片适配 */
+        /* 图片卡片 - 保持原始比例 */
         .img-card {
-            background: white;
-            border-radius: 16px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 1rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .img-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(45, 90, 63, 0.25);
         }
         .img-card img {
             width: 100%;
             height: auto;
             display: block;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .img-card:hover img {
+            transform: scale(1.03);
+        }
+
+        /* 图片信息区域 */
+        .img-info {
+            padding: 16px;
+            background: white;
         }
 
         .tag {
-            background: rgba(45, 90, 63, 0.08);
+            background: rgba(45, 90, 63, 0.1);
             color: #2d5a3f;
-            padding: 2px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 11px;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+        .tag:hover {
+            background: #2d5a3f;
+            color: white;
         }
 
-        /* 灯箱适配 */
+        .section-title {
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: #2d5a3f;
+            transition: width 0.4s ease;
+        }
+        .section-title:hover::after {
+            width: 100%;
+        }
+
+        .link-card {
+            background: white;
+            border: 1px solid rgba(45, 90, 63, 0.1);
+            transition: all 0.4s ease;
+        }
+        .link-card:hover {
+            border-color: #2d5a3f;
+            transform: translateX(8px);
+        }
+
+        /* 灯箱 */
         .lightbox {
             position: fixed;
             inset: 0;
@@ -80,153 +129,346 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
         }
-        .lightbox img { max-width: 95vw; max-height: 80vh; object-fit: contain; }
-
-        /* 修复移动端 Modal 打开后的晃动 */
-        .modal-open { overflow: hidden !important; position: fixed; width: 100%; }
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            transform: scale(0.9);
+            transition: transform 0.4s ease;
+        }
+        .lightbox.active img {
+            transform: scale(1);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .lightbox-close:hover {
+            background: #2d5a3f;
+            color: white;
+            transform: rotate(90deg);
+        }
     </style>
+<base target="_blank">
 </head>
-
-<body x-data="{ openModal: null, lightboxImg: null }" :class="{ 'modal-open': openModal }">
+<body x-data="{ openModal: null, lightboxImg: null }" x-effect="() => { if (openModal !== null || lightboxImg !== null) { document.body.classList.add('no-scroll'); } else { document.body.classList.remove('no-scroll'); } }" x-cloak>
     <div class="blob"></div>
 
-    <nav class="fixed w-full z-50 px-6 py-4 flex justify-between items-center glass">
-        <div class="text-xl font-bold tracking-tighter text-[#2d5a3f]">PORTFOLIO.</div>
-        <div class="hidden md:flex space-x-8 text-[10px] tracking-widest uppercase font-medium">
-            <a href="#about" class="hover:text-green-700">关于</a>
-            <a href="#portfolio" class="hover:text-green-700">作品</a>
-            <a href="#experience" class="hover:text-green-700">履历</a>
+    <nav class="fixed w-full z-50 px-6 md:px-10 py-5 md:py-6 flex justify-between items-center glass shadow-sm">
+        <div class="text-2xl font-bold tracking-tighter text-[#2d5a3f]">JINGWEN.</div>
+        <div class="hidden md:flex space-x-12 text-xs tracking-[0.2em] uppercase font-light">
+            <a href="#about" class="hover:text-green-700 transition">关于</a>
+            <a href="#portfolio" class="hover:text-green-700 transition">作品</a>
+            <a href="#experience" class="hover:text-green-700 transition">履历</a>
+            <a href="#contact" class="hover:text-green-700 transition">联系</a>
         </div>
-        <div class="md:hidden text-[10px] font-bold text-[#2d5a3f]">CV.2026</div>
     </nav>
 
-    <section id="about" class="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-20 pt-20">
-        <div class="w-full md:w-1/2 text-center md:text-left" data-aos="fade-up">
-            <h2 class="text-xs tracking-[0.3em] text-gray-400 mb-4 italic uppercase">Instructional Designer</h2>
-            <h1 class="text-5xl md:text-7xl font-bold text-[#2d5a3f] mb-6">作品集</h1>
-            <p class="text-gray-500 text-sm md:text-base leading-relaxed max-w-sm mb-10 mx-auto md:mx-0">
-                国家高级职业生涯规划师。专注课程体系研发与知识可视化设计，用 AI 驱动内容创新。
+    <section id="about" class="min-h-screen flex flex-col md:flex-row items-center justify-center px-6 md:px-24 pt-24 md:pt-20 overflow-hidden">
+        <div class="md:w-1/2" data-aos="fade-up" data-aos-duration="1800">
+            <h2 class="text-lg font-light tracking-[0.3em] text-gray-400 mb-6 italic">Instructional Designer.</h2>
+            <h1 class="text-6xl md:text-7xl font-bold text-[#2d5a3f] mb-8 leading-tight">张婧雯</h1>
+            <p class="text-gray-500 text-base md:text-lg leading-relaxed max-w-md mb-10 font-light">
+                国家高级职业生涯规划师。追求美感与逻辑的深度融合，用 AIGC 提效内容生产，重塑数字化学习体验。
             </p>
-            <a href="#portfolio" class="inline-block px-10 py-4 bg-[#2d5a3f] text-white rounded-full text-xs tracking-widest hover:shadow-xl transition-all">START EXPLORING</a>
+            <div class="flex space-x-6">
+                <a href="#portfolio" class="px-8 md:px-10 py-4 bg-[#2d5a3f] text-white hover:shadow-2xl transition-all duration-500 rounded-full text-xs tracking-widest">探索作品集</a>
+            </div>
         </div>
-        <div class="w-full md:w-1/2 mt-12 md:mt-0 flex justify-center" data-aos="zoom-in">
-            <div class="relative w-64 md:w-80 h-[450px] rounded-[60px] md:rounded-[100px] overflow-hidden shadow-2xl rotate-2">
-                <img src="me.jpg" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x600?text=Profile'">
+        <div class="md:w-1/2 mt-16 md:mt-0 flex justify-center relative" data-aos="zoom-out-up" data-aos-duration="2000">
+            <div class="relative w-72 h-[460px] md:w-80 md:h-[500px] rounded-[80px] md:rounded-[100px] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-1000">
+                <img src="me.jpg" alt="张婧雯" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-[#2d5a3f]/10 rounded-full blur-3xl"></div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 md:px-10">
+        <div class="max-w-4xl mx-auto glass p-8 md:p-12 rounded-[40px] md:rounded-[50px]" data-aos="fade-up" data-aos-duration="1500">
+            <h3 class="text-xs tracking-[0.3em] text-gray-400 mb-8 uppercase font-bold">Profile / 个人简介</h3>
+            <p class="text-lg md:text-2xl text-gray-700 leading-relaxed font-light">
+                3年培训内容研发经验。擅长<span class="text-[#2d5a3f] font-medium">课程框架搭建</span>与<span class="text-[#2d5a3f] font-medium">知识可视化</span>。具备深厚的用户洞察力（1v1访谈50+人），能够快速理解业务需求并转化为可落地的学习方案。具备优秀的沟通表达能力，拥有丰富的主持、培训经验。内容创作能力佳，能够独立进行视频剪辑，活动策划，文案撰写等。
+            </p>
+        </div>
+    </section>
+
+    <section id="portfolio" class="py-24 md:py-32 px-6 md:px-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+                <div @click="openModal = 'course'" class="group bg-white p-8 md:p-10 rounded-[35px] md:rounded-[45px] shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer" data-aos="fade-up">
+                    <div class="text-[10px] tracking-widest text-gray-400 mb-6 uppercase">Logical Design</div>
+                    <h3 class="text-2xl font-bold mb-4 text-[#2d5a3f]">课程研发与设计</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed mb-8">展示《职场新人进阶课》等全链路研发闭环，从调研到工具包开发。</p>
+                    <div class="text-[#2d5a3f] text-xs font-bold tracking-widest group-hover:translate-x-2 transition-transform">EXPLORE MORE →</div>
+                </div>
+
+                <div @click="openModal = 'content'" class="group bg-white p-8 md:p-10 rounded-[35px] md:rounded-[45px] shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-[10px] tracking-widest text-gray-400 mb-6 uppercase">Aesthetic Creation</div>
+                    <h3 class="text-2xl font-bold mb-4 text-[#2d5a3f]">全能内容创作</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed mb-8">15w+阅读量运营、132期主持经验。具备极强的叙事审美与视觉化能力。</p>
+                    <div class="text-[#2d5a3f] text-xs font-bold tracking-widest group-hover:translate-x-2 transition-transform">EXPLORE MORE →</div>
+                </div>
+
+                <div @click="openModal = 'ai'" class="group bg-white p-8 md:p-10 rounded-[35px] md:rounded-[45px] shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-[10px] tracking-widest text-gray-400 mb-6 uppercase">Digital Efficiency</div>
+                    <h3 class="text-2xl font-bold mb-4 text-[#2d5a3f]">AI 数字化效能</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed mb-8">独立开发交互原型。展示AI如何将课程案例生成效率提升80%。</p>
+                    <div class="text-[#2d5a3f] text-xs font-bold tracking-widest group-hover:translate-x-2 transition-transform">EXPLORE MORE →</div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="portfolio" class="py-20 px-6">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div @click="openModal = 'course'" class="bg-white p-8 rounded-[30px] shadow-sm hover:shadow-xl transition-all cursor-pointer border border-gray-50" data-aos="fade-up">
-                <h3 class="text-xl font-bold mb-3 text-[#2d5a3f]">课程研发与设计</h3>
-                <p class="text-xs text-gray-500 mb-6">全链路研发闭环，从调研到工具包开发。</p>
-                <span class="text-[10px] font-bold tracking-tighter text-[#2d5a3f]">VIEW DETAILS →</span>
-            </div>
-            <div @click="openModal = 'content'" class="bg-white p-8 rounded-[30px] shadow-sm hover:shadow-xl transition-all cursor-pointer border border-gray-50" data-aos="fade-up" data-aos-delay="100">
-                <h3 class="text-xl font-bold mb-3 text-[#2d5a3f]">全能内容创作</h3>
-                <p class="text-xs text-gray-500 mb-6">主持、运营、视觉化表达的一站式输出。</p>
-                <span class="text-[10px] font-bold tracking-tighter text-[#2d5a3f]">VIEW DETAILS →</span>
-            </div>
-            <div @click="openModal = 'ai'" class="bg-white p-8 rounded-[30px] shadow-sm hover:shadow-xl transition-all cursor-pointer border border-gray-50" data-aos="fade-up" data-aos-delay="200">
-                <h3 class="text-xl font-bold mb-3 text-[#2d5a3f]">AI 数字化效能</h3>
-                <p class="text-xs text-gray-500 mb-6">利用 AI 提升 80% 的课程内容生成效率。</p>
-                <span class="text-[10px] font-bold tracking-tighter text-[#2d5a3f]">VIEW DETAILS →</span>
+    <!-- 证书资质 - 移动端单列大图优化 -->
+    <section class="py-20 px-6 bg-[#f2f7f2]">
+        <div class="max-w-5xl mx-auto" data-aos="fade-up" data-aos-duration="1500">
+            <h3 class="text-xs tracking-[0.4em] text-gray-400 mb-12 text-center uppercase font-bold">Certificates / 证书资质</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+                <div class="bg-white p-6 rounded-[30px] text-center shadow-sm hover:shadow-lg transition-all duration-500 group">
+                    <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center group-hover:bg-[#2d5a3f] transition-colors">
+                        <i class="fas fa-certificate text-[#2d5a3f] group-hover:text-white transition-colors"></i>
+                    </div>
+                    <p class="text-sm font-medium text-gray-800">国家高级</p>
+                    <p class="text-xs text-gray-500">职业生涯规划师</p>
+                </div>
+                <div class="bg-white p-6 rounded-[30px] text-center shadow-sm hover:shadow-lg transition-all duration-500 group">
+                    <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center group-hover:bg-[#2d5a3f] transition-colors">
+                        <i class="fas fa-language text-[#2d5a3f] group-hover:text-white transition-colors"></i>
+                    </div>
+                    <p class="text-sm font-medium text-gray-800">CET-6</p>
+                    <p class="text-xs text-gray-500">大学英语六级</p>
+                </div>
+                <div class="bg-white p-6 rounded-[30px] text-center shadow-sm hover:shadow-lg transition-all duration-500 group">
+                    <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center group-hover:bg-[#2d5a3f] transition-colors">
+                        <i class="fas fa-microphone-alt text-[#2d5a3f] group-hover:text-white transition-colors"></i>
+                    </div>
+                    <p class="text-sm font-medium text-gray-800">普通话</p>
+                    <p class="text-xs text-gray-500">一级乙等</p>
+                </div>
+                <div class="bg-white p-6 rounded-[30px] text-center shadow-sm hover:shadow-lg transition-all duration-500 group">
+                    <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center group-hover:bg-[#2d5a3f] transition-colors">
+                        <i class="fas fa-broadcast-tower text-[#2d5a3f] group-hover:text-white transition-colors"></i>
+                    </div>
+                    <p class="text-sm font-medium text-gray-800">播音员主持人</p>
+                    <p class="text-xs text-gray-500">资格证</p>
+                </div>
+                <div class="bg-white p-6 rounded-[30px] text-center shadow-sm hover:shadow-lg transition-all duration-500 group">
+                    <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center group-hover:bg-[#2d5a3f] transition-colors">
+                        <i class="fas fa-car text-[#2d5a3f] group-hover:text-white transition-colors"></i>
+                    </div>
+                    <p class="text-sm font-medium text-gray-800">驾驶证</p>
+                    <p class="text-xs text-gray-500">C1</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <div x-show="openModal === 'course'" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center bg-white md:bg-black/20 md:backdrop-blur-sm">
-        <div class="portfolio-modal flex flex-col relative overflow-hidden" @click.away="openModal = null">
-            <button @click="openModal = null" class="absolute top-6 right-6 z-10 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                <i class="fas fa-times text-gray-500"></i>
-            </button>
-            
-            <div class="p-8 md:p-12 overflow-y-auto">
-                <div class="flex gap-2 mb-4">
-                    <span class="tag">课程研发</span><span class="tag">框架设计</span>
-                </div>
-                <h3 class="text-2xl md:text-3xl font-bold text-[#2d5a3f] mb-8">课程研发作品展示</h3>
-                
-                <div class="space-y-8">
-                    <div>
-                        <p class="text-sm font-bold mb-4 text-gray-700">01 职场新人进阶课程框架</p>
-                        <div class="img-card" @click="lightboxImg = '新人职场进阶课程框架导图.png'">
-                            <img src="新人职场进阶课程框架导图.png">
+    <section id="experience" class="py-24 md:py-32 px-6 md:px-10 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-xs tracking-[0.4em] text-gray-400 mb-20 text-center uppercase font-bold">Work Experience / 履历详情</h3>
+
+            <div class="space-y-24">
+                <div class="relative pl-12 resume-line" data-aos="fade-up" data-aos-duration="1500">
+                    <div class="absolute -left-[4px] top-0 w-2 h-2 rounded-full bg-[#2d5a3f]"></div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-800">深圳环金科技有限公司</h4>
+                            <p class="text-[#2d5a3f] text-sm mt-1">企业文化培训专员 <span class="mx-2 opacity-30">|</span> 2025.05 – 2025.11</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="img-card" @click="lightboxImg = '职场新人进阶课程1.png'"><img src="职场新人进阶课程1.png"></div>
-                        <div class="img-card" @click="lightboxImg = '职场新人进阶课程2.png'"><img src="职场新人进阶课程2.png"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-sm text-gray-500 leading-relaxed">
+                        <div class="space-y-3">
+                            <p><strong>• 课程研发与执行：</strong>参与新员工培训体系设计，协助开发沟通、时间管理等职场基础技能课件，负责现场讲解与培训落地。</p>
+                            <p><strong>• 知识可视化：</strong>独立策划企业文化墙，图文展示人才发展路径；将培训内容转化为PPT、宣传海报等可视化物料。</p>
+                        </div>
+                        <div class="space-y-3">
+                            <p><strong>• 项目管理：</strong>统筹30+场活动，建立SOP体系，平均满意度96%；负责员工访谈与需求调研。</p>
+                            <p><strong>• 全能输出：</strong>公众号产出36篇原创（阅读15w+），独立完成活动视频（PR/剪映）与访谈文案撰写。</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-bold mb-4 text-gray-700">02 企业新员工培训（环金科技）</p>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                            <img src="新员工培训课程截图1.png" class="rounded-lg shadow-sm" @click="lightboxImg = '新员工培训课程截图1.png'">
-                            <img src="新员工培训课程截图2.png" class="rounded-lg shadow-sm" @click="lightboxImg = '新员工培训课程截图2.png'">
-                            <img src="微信图片_20260409204902_211_2.png" class="rounded-lg shadow-sm" @click="lightboxImg = '微信图片_20260409204902_211_2.png'">
+                </div>
+
+                <div class="relative pl-12 resume-line" data-aos="fade-up" data-aos-duration="1500">
+                    <div class="absolute -left-[4px] top-0 w-2 h-2 rounded-full bg-[#2d5a3f]"></div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-800">恭贺新禧数字文化有限公司</h4>
+                            <p class="text-[#2d5a3f] text-sm mt-1">内容策划（直播方向） <span class="mx-2 opacity-30">|</span> 2025.02 – 2025.05</p>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-500 leading-relaxed space-y-4">
+                        <p><strong>• 内容策划：</strong>策划邮储银行"对话访谈"系列直播（6场），通过访谈将嘉宾经验提炼为结构化叙事，转化为可传播的学习内容。</p>
+                        <p><strong>• 直播运营：</strong>撰写直播脚本及互动话术，根据实时数据（单场最高3w+）调整节奏，提升用户留存。</p>
+                        <p><strong>• 沟通表达：</strong>接待客户及政府领导15+场次，获"专业、亲和"职业评价。</p>
+                    </div>
+                </div>
+
+                <div class="relative pl-12 resume-line" data-aos="fade-up" data-aos-duration="1500">
+                    <div class="absolute -left-[4px] top-0 w-2 h-2 rounded-full bg-[#2d5a3f]"></div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-800">世纪中彩视频传媒技术股份有限公司</h4>
+                            <p class="text-[#2d5a3f] text-sm mt-1">培训与内容主管 <span class="mx-2 opacity-30">|</span> 2022.08 – 2024.12</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm text-gray-500 leading-relaxed">
+                        <div class="space-y-4">
+                            <p><strong>• 培训与内容研发：</strong>针对新彩种上市设计线上/线下培训课程；主导制作70+支知识短视频，撰写100+篇宣传标书及公众号文案。</p>
+                            <p><strong>• 项目管理：</strong>统筹43场线下政府展会及公益开放日，实现零失误交付，建立完整素材库。</p>
+                        </div>
+                        <div class="space-y-4">
+                            <p><strong>• 主持与讲解：</strong>担任省级节目主持人132期，主持活动50+场；作为首席讲解员接待100+参观团，满意度提升至98%，获省级创新表彰。</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div x-show="openModal === 'ai'" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center bg-white md:bg-black/20 md:backdrop-blur-sm">
-        <div class="portfolio-modal flex flex-col relative overflow-hidden" @click.away="openModal = null">
-            <button @click="openModal = null" class="absolute top-6 right-6 z-10 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center"><i class="fas fa-times text-gray-500"></i></button>
-            <div class="p-8 md:p-12 overflow-y-auto">
-                <h3 class="text-2xl font-bold text-[#2d5a3f] mb-6">AI 数字化效能</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <p class="text-xs font-bold mb-2">职道了 - 智能诊断平台</p>
-                        <img src="网站截图.png" class="rounded-xl shadow-md w-full mb-4" @click="lightboxImg = '网站截图.png'">
-                        <a href="https://zhidaole.vercel.app/" target="_blank" class="text-xs text-blue-600 underline">访问在线原型 →</a>
-                    </div>
-                    <div>
-                        <p class="text-xs font-bold mb-2">Prompt 提示词库</p>
-                        <img src="提示词库.png" class="rounded-xl shadow-md w-full" @click="lightboxImg = '提示词库.png'">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div x-show="lightboxImg" x-cloak class="lightbox" @click="lightboxImg = null">
-        <div class="absolute top-6 right-6 text-white text-2xl"><i class="fas fa-times"></i></div>
-        <img :src="lightboxImg" @click.stop>
-    </div>
-
-    <footer id="contact" class="py-20 bg-white border-t border-gray-100 text-center">
-        <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-10 text-xs text-gray-400 tracking-widest px-6">
+    <footer id="contact" class="py-24 md:py-32 text-center">
+        <h2 class="text-3xl md:text-4xl font-serif text-[#2d5a3f] mb-16" data-aos="fade-up">期待与您共创</h2>
+        <div class="flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 md:space-x-12 text-gray-400 text-xs md:text-sm tracking-widest font-light" data-aos="fade-up">
             <span>WECHAT: hxdnyp_</span>
             <span>EMAIL: 376783930@qq.com</span>
             <span>PHONE: 15641315960</span>
         </div>
-        <div class="mt-10 text-[8px] text-gray-300 tracking-[0.4em] uppercase">© 2026 PORTFOLIO · ALL RIGHTS RESERVED</div>
+        <div class="mt-20 text-[10px] text-gray-300 tracking-[0.5em] uppercase">© 2026 JINGWEN · ALL RIGHTS RESERVED</div>
     </footer>
 
+    <!-- 课程研发 Modal (移动端全屏) -->
+    <div x-show="openModal === 'course'" x-cloak class="fixed inset-0 z-[100] glass flex items-center justify-center p-0 md:p-8" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="portfolio-modal w-full max-w-7xl h-[90vh] md:h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative" @click.away="openModal = null" x-transition:enter="transition ease-out duration-700 delay-100" x-transition:enter-start="opacity-0 scale-95 translate-y-8" x-transition:enter-end="opacity-100 scale-100 translate-y-0">
+            <button @click="openModal = null" class="absolute top-5 right-5 md:top-6 md:right-6 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full hover:bg-[#2d5a3f] hover:text-white transition-all duration-300 text-gray-600 shadow-lg group">
+                <i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i>
+            </button>
+
+            <div class="px-6 md:px-10 pt-8 md:pt-10 pb-4">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <span class="tag">课程研发</span>
+                    <span class="tag">框架设计</span>
+                    <span class="tag">知识可视化</span>
+                </div>
+                <h3 class="text-3xl md:text-4xl font-bold text-[#2d5a3f] section-title">课程研发与设计</h3>
+                <p class="text-gray-500 mt-3 max-w-2xl text-sm md:text-base">从需求洞察到内容交付的全链路研发能力，覆盖职场新人培养、企业内训、独立课程设计等多场景。</p>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-6 md:px-10 pb-8 md:pb-10">
+                <!-- 职场新人进阶课 -->
+                <div class="mb-12">
+                    <h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
+                        <span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">01</span>
+                        职场新人进阶课程 <span class="ml-3 text-sm font-normal text-gray-400">独立开发</span>
+                    </h4>
+                    <div class="img-card mb-6 cursor-pointer" @click="lightboxImg = '新人职场进阶课程框架导图.png'">
+                        <img src="新人职场进阶课程框架导图.png" alt="课程框架导图" class="w-full">
+                        <div class="img-info">
+                            <p class="text-sm font-medium text-gray-800">6大模块课程框架</p>
+                            <p class="text-xs text-gray-400">从自我认知到行动落地的完整闭环</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="img-card cursor-pointer" @click="lightboxImg = '职场新人进阶课程1.png'">
+                            <img src="职场新人进阶课程1.png" alt="MBTI模块" class="w-full">
+                            <div class="img-info"><p class="text-sm text-gray-800">MBTI性格测试模块</p></div>
+                        </div>
+                        <div class="img-card cursor-pointer" @click="lightboxImg = '职场新人进阶课程2.png'">
+                            <img src="职场新人进阶课程2.png" alt="职业规划" class="w-full">
+                            <div class="img-info"><p class="text-sm text-gray-800">职业规划核心步骤</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12">
+                    <h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">02</span>企业新员工培训 <span class="ml-3 text-sm font-normal text-gray-400">环金科技</span></h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="img-card cursor-pointer" @click="lightboxImg = '新员工培训课程截图1.png'"><img src="新员工培训课程截图1.png" alt="培训封面"><div class="img-info"><p class="text-sm text-gray-800">新员工入职培训封面</p></div></div>
+                        <div class="img-card cursor-pointer" @click="lightboxImg = '新员工培训课程截图2.png'"><img src="新员工培训课程截图2.png" alt="平台对比"><div class="img-info"><p class="text-sm text-gray-800">跨境电商平台对比</p></div></div>
+                        <div class="img-card cursor-pointer" @click="lightboxImg = '微信图片_20260409204902_211_2.png'"><img src="微信图片_20260409204902_211_2.png" alt="飞轮理论"><div class="img-info"><p class="text-sm text-gray-800">Amazon飞轮理论模型</p></div></div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div><h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">03</span>办公室养生课 <span class="ml-3 text-sm font-normal text-gray-400">独立开发</span></h4>
+                        <div class="space-y-6"><div class="img-card cursor-pointer" @click="lightboxImg = '办公室养生课1.png'"><img src="办公室养生课1.png" alt="润肺提神"><div class="img-info"><p class="text-sm text-gray-800">金·润肺提神 - 呼吸法与茶饮</p></div></div>
+                        <div class="img-card cursor-pointer" @click="lightboxImg = '办公室养生课2.png'"><img src="办公室养生课2.png" alt="五行能量"><div class="img-info"><p class="text-sm text-gray-800">五行与身体能量</p></div></div></div>
+                    </div>
+                    <div><h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">04</span>Z时代职业素养提升 <span class="ml-3 text-sm font-normal text-gray-400">环金大讲堂</span></h4>
+                        <div class="space-y-6"><div class="img-card cursor-pointer" @click="lightboxImg = '微信图片_20260409204901_210_2.png'"><img src="微信图片_20260409204901_210_2.png" alt="职业素养"><div class="img-info"><p class="text-sm text-gray-800">Z时代职场人适应与突破实战指南</p></div></div>
+                        <div class="img-card cursor-pointer" @click="lightboxImg = '微信图片_20260409204900_209_2.png'"><img src="微信图片_20260409204900_209_2.png" alt="实用工具"><div class="img-info"><p class="text-sm text-gray-800">实用工具与方法体系</p></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Modal (职道了链接已确认为最新 vercel 站点) -->
+    <div x-show="openModal === 'ai'" x-cloak class="fixed inset-0 z-[100] glass flex items-center justify-center p-0 md:p-8" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="portfolio-modal w-full max-w-6xl h-[90vh] md:h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative" @click.away="openModal = null" x-transition:enter="transition ease-out duration-700 delay-100" x-transition:enter-start="opacity-0 scale-95 translate-y-8" x-transition:enter-end="opacity-100 scale-100 translate-y-0">
+            <button @click="openModal = null" class="absolute top-5 right-5 md:top-6 md:right-6 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full hover:bg-[#2d5a3f] hover:text-white transition-all duration-300 text-gray-600 shadow-lg group"><i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i></button>
+            <div class="px-6 md:px-10 pt-8 md:pt-10 pb-4">
+                <div class="flex flex-wrap gap-2 mb-2"><span class="tag">AI工具</span><span class="tag">交互原型</span><span class="tag">Prompt工程</span></div>
+                <h3 class="text-3xl md:text-4xl font-bold text-[#2d5a3f] section-title">AI 数字化效能</h3>
+                <p class="text-gray-500 mt-3 text-sm md:text-base">让AI深度嵌入课程开发的SOP中，用技术重塑学习体验。</p>
+            </div>
+            <div class="flex-1 overflow-y-auto px-6 md:px-10 pb-8 md:pb-10">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">01</span>「职道了」职业诊断平台</h4>
+                        <p class="text-sm text-gray-500 mb-4">独立开发的职业迷茫解决方案，融合盖洛普才干、MBTI与霍兰德兴趣测评。</p>
+                        <!-- 链接已更新为最新 Vercel 在线站点 -->
+                        <a href="https://zhidaole.vercel.app" target="_blank" class="link-card block p-4 rounded-[16px] mb-6 group">
+                            <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="w-10 h-10 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center"><i class="fas fa-external-link-alt text-[#2d5a3f]"></i></div><div><p class="font-medium text-gray-800">访问网站</p><p class="text-xs text-gray-400">zhidaole.vercel.app</p></div></div><i class="fas fa-arrow-right text-[#2d5a3f] group-hover:translate-x-2 transition-transform"></i></div>
+                        </a>
+                        <div class="space-y-6"><div class="img-card cursor-pointer" @click="lightboxImg = '网站截图.png'"><img src="网站截图.png" alt="网站首页"><div class="img-info"><p class="text-sm text-gray-800">首页 - 职业确定性诊断</p></div></div>
+                        <div class="grid grid-cols-2 gap-4"><div class="img-card cursor-pointer" @click="lightboxImg = '网站截图2.png'"><img src="网站截图2.png" alt="岗位百科"><div class="img-info"><p class="text-xs text-gray-800">热门岗位百科</p></div></div><div class="img-card cursor-pointer" @click="lightboxImg = '网站截图3.png'"><img src="网站截图3.png" alt="诊断中心"><div class="img-info"><p class="text-xs text-gray-800">三位一体诊断中心</p></div></div></div></div>
+                    </div>
+                    <div><h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">02</span>Prompt提示词库</h4><p class="text-sm text-gray-500 mb-4">系统化整理的AI提示词工作流，覆盖工作、学习、心理、课程设计四大场景。</p><div class="flex flex-wrap gap-2 mb-6"><span class="tag">工作类Prompt</span><span class="tag">学习类Prompt</span><span class="tag">心理/认知类</span><span class="tag">课程设计类</span></div><div class="img-card cursor-pointer mb-6" @click="lightboxImg = '提示词库.png'"><img src="提示词库.png" alt="提示词库"><div class="img-info"><p class="text-sm font-medium text-gray-800">飞书文档知识库</p><p class="text-xs text-gray-400">周报生成、课程大纲设计、逐字稿撰写等实用Prompt</p></div></div><div class="p-5 bg-white rounded-[20px] border border-[#2d5a3f]/10"><p class="text-sm text-[#2d5a3f] font-medium mb-2">效率提升数据</p><p class="text-3xl font-bold text-[#2d5a3f]">80%</p><p class="text-xs text-gray-400">课程案例生成效率提升</p></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内容创作 Modal (移动端全屏 & 图片单列自动适配) -->
+    <div x-show="openModal === 'content'" x-cloak class="fixed inset-0 z-[100] glass flex items-center justify-center p-0 md:p-8" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="portfolio-modal w-full max-w-7xl h-[90vh] md:h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative" @click.away="openModal = null" x-transition:enter="transition ease-out duration-700 delay-100" x-transition:enter-start="opacity-0 scale-95 translate-y-8" x-transition:enter-end="opacity-100 scale-100 translate-y-0">
+            <button @click="openModal = null" class="absolute top-5 right-5 md:top-6 md:right-6 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full hover:bg-[#2d5a3f] hover:text-white transition-all duration-300 text-gray-600 shadow-lg group"><i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i></button>
+            <div class="px-6 md:px-10 pt-8 md:pt-10 pb-4"><div class="flex flex-wrap gap-2 mb-2"><span class="tag">主持</span><span class="tag">视频剪辑</span><span class="tag">视觉设计</span><span class="tag">活动统筹</span></div><h3 class="text-3xl md:text-4xl font-bold text-[#2d5a3f] section-title">全能内容创作</h3><p class="text-gray-500 mt-3 text-sm md:text-base">从镜头前到幕后，从策划到交付，构建完整的内容生产闭环</p></div>
+            <div class="flex-1 overflow-y-auto px-6 md:px-10 pb-8 md:pb-10">
+                <div class="mb-12"><h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">01</span>主持与培训交付</h4><p class="text-sm text-gray-500 mb-4">132期省级节目主持经验，50+场活动主持。擅长培训现场讲解与互动控场，具备极强的现场感染力与逻辑表达能力。</p><div class="grid md:grid-cols-2 gap-8"><div class="img-card cursor-pointer" @click="lightboxImg = '主持培训.jpg'"><img src="主持培训.jpg" alt="主持培训"><div class="img-info"><p class="text-sm font-medium text-gray-800">培训主持现场</p></div></div><div class="img-card cursor-pointer" @click="lightboxImg = '员工培训图片.jpg'"><img src="员工培训图片.jpg" alt="培训现场"><div class="img-info"><p class="text-sm font-medium text-gray-800">业务UP俱乐部培训</p></div></div></div></div>
+                <div class="mb-12"><h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">02</span>视频剪辑与内容运营</h4><p class="text-sm text-gray-500 mb-4">熟练使用PR/剪映，独立制作70+支知识短视频。擅长节奏把控、字幕包装与情绪渲染，具备从0到1的账号运营能力。</p><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="img-card cursor-pointer" @click="lightboxImg = '剪辑界面.png'"><img src="剪辑界面.png" alt="剪辑界面"><div class="img-info"><p class="text-sm font-medium text-gray-800">剪辑时间线</p><p class="text-xs text-gray-400">PR/剪映专业剪辑</p></div></div><div class="img-card cursor-pointer" @click="lightboxImg = '剪辑作品1.jpg'"><img src="剪辑作品1.jpg" alt="剪辑作品1"><div class="img-info"><p class="text-sm font-medium text-gray-800">个人成长类内容</p><p class="text-xs text-gray-400">小红书风格短视频</p></div></div><div class="img-card cursor-pointer" @click="lightboxImg = '剪辑作品2.jpg'"><img src="剪辑作品2.jpg" alt="剪辑作品2"><div class="img-info"><p class="text-sm font-medium text-gray-800">话题类短视频</p><p class="text-xs text-gray-400">高互动内容策划</p></div></div></div></div>
+                <div class="mb-12"><h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">03</span>知识可视化动画</h4><p class="text-sm text-gray-500 mb-4">将复杂知识转化为易懂的视觉动画，提升信息传递效率与学习者参与度。</p><div class="grid md:grid-cols-2 gap-8"><div class="img-card cursor-pointer" @click="lightboxImg = '培训动画1.png'"><img src="培训动画1.png" alt="奖池动画"><div class="img-info"><p class="text-sm font-medium text-gray-800">奖池资金余额讲解</p><p class="text-xs text-gray-400">彩票知识培训系列</p></div></div><div class="img-card cursor-pointer" @click="lightboxImg = '培训动画2.png'"><img src="培训动画2.png" alt="双色球动画"><div class="img-info"><p class="text-sm font-medium text-gray-800">双色球票面解析</p><p class="text-xs text-gray-400">知识点可视化</p></div></div></div></div>
+                <div class="mb-12"><h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">04</span>视觉与物料设计</h4><p class="text-sm text-gray-500 mb-4">从企业文化墙到培训手册，从概念到落地的完整设计能力。擅长将抽象信息转化为直观的视觉语言。</p><div class="grid md:grid-cols-2 gap-8"><div class="img-card cursor-pointer" @click="lightboxImg = '人才培养体系文化墙设计.png'"><img src="人才培养体系文化墙设计.png" alt="文化墙"><div class="img-info"><p class="text-sm font-medium text-gray-800">文化墙设计</p><p class="text-xs text-gray-400">环金科技人才培养体系 - 传承/业务/管理/多元培养/双通道</p></div></div><div class="img-card cursor-pointer" @click="lightboxImg = '新员工入职手册.png'"><img src="新员工入职手册.png" alt="入职手册"><div class="img-info"><p class="text-sm font-medium text-gray-800">手册设计</p><p class="text-xs text-gray-400">新员工入职手册四折页</p></div></div></div></div>
+                <div><h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">05</span>活动统筹与SOP</h4><p class="text-sm text-gray-500 mb-4">建立标准化活动执行流程，统筹30+场活动，平均满意度96%。擅长从策划到落地的全流程项目管理。</p><div class="grid md:grid-cols-2 gap-8"><div class="img-card cursor-pointer" @click="lightboxImg = '活动sop.png'"><img src="活动sop.png" alt="SOP"><div class="img-info"><p class="text-sm font-medium text-gray-800">物料上墙SOP</p><p class="text-xs text-gray-400">仪式筹备全流程标准化</p></div></div><div class="img-card cursor-pointer" @click="lightboxImg = '活动方案.png'"><img src="活动方案.png" alt="活动方案"><div class="img-info"><p class="text-sm font-medium text-gray-800">前期筹备甘特图</p><p class="text-xs text-gray-400">多模块分工与时间管理</p></div></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 灯箱：独立图片放大层，关闭后不影响底层Modal状态 -->
+    <div x-show="lightboxImg" x-cloak class="lightbox" :class="{ 'active': lightboxImg }" @click="lightboxImg = null">
+        <div class="lightbox-close" @click.stop="lightboxImg = null"><i class="fas fa-times"></i></div>
+        <img :src="lightboxImg" x-show="lightboxImg" @click.stop>
+    </div>
+
     <script>
-        AOS.init({ duration: 1000, once: true });
-        
-        // 关键修复：防止手机端因 Modal 弹出导致的缩放和背景滚动偏移
-        document.addEventListener('alpine:init', () => {
-            Alpine.effect(() => {
-                const isModalOpen = Alpine.evaluate(document.body, 'openModal');
-                if (isModalOpen) {
-                    const scrollY = window.scrollY;
-                    document.body.style.position = 'fixed';
-                    document.body.style.top = `-${scrollY}px`;
-                    document.body.style.width = '100%';
-                } else {
-                    const scrollY = document.body.style.top;
-                    document.body.style.position = '';
-                    document.body.style.top = '';
-                    window.scrollTo(0, parseInt(scrollY || '0') * -1);
-                }
-            });
-        });
+        AOS.init({ once: true, mirror: false });
     </script>
 </body>
 </html>
