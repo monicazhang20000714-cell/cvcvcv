@@ -15,9 +15,8 @@
         [x-cloak] { display: none !important; }
         body { font-family: 'PingFang SC', sans-serif; background-color: #fafaf9; scroll-behavior: smooth; }
 
-        /* 滚动锁定样式 */
-        .no-scroll { overflow: hidden !important; position: fixed; width: 100%; height: 100%; top: 0; left: 0; }
-        /* 防止 body 固定滚动条后布局偏移补偿（可选）保留更好体验，此处不做复杂补偿 */
+        /* 修复滚动锁定引起的页面缩放/跳动：仅禁止滚动，不移位、不固定 */
+        .no-scroll { overflow: hidden !important; }
 
         .blob {
             position: absolute; width: 600px; height: 600px;
@@ -26,15 +25,12 @@
         }
         @keyframes move { from { transform: translate(-10%, -5%); } to { transform: translate(15%, 15%); } }
 
-        /* 导航栏玻璃效果优化 - 更清晰且不遮挡内容 */
         .glass { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .resume-line::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 1px; background: linear-gradient(to bottom, #2d5a3f, transparent); }
         [data-aos] { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important; }
 
-        /* 作品集Modal专属样式 + 移动端全屏适配 */
         .portfolio-modal { background: linear-gradient(135deg, #fafaf9 0%, #f2f7f2 100%); }
 
-        /* 移动端全屏弹窗：充分利用空间，无圆角，无边界限制 */
         @media (max-width: 768px) {
             .portfolio-modal {
                 width: 100% !important;
@@ -43,14 +39,8 @@
                 border-radius: 0 !important;
                 box-shadow: none !important;
             }
-            /* 内部内容区可微调边距保障内容不贴边太紧，但保持原有风格仅全屏无圆角，保留原px-10 */
-            .modal-inner-content {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
         }
 
-        /* 图片卡片 - 保持原始比例 */
         .img-card {
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
@@ -72,7 +62,6 @@
             transform: scale(1.03);
         }
 
-        /* 图片信息区域 */
         .img-info {
             padding: 16px;
             background: white;
@@ -120,7 +109,6 @@
             transform: translateX(8px);
         }
 
-        /* 灯箱 */
         .lightbox {
             position: fixed;
             inset: 0;
@@ -237,7 +225,6 @@
         </div>
     </section>
 
-    <!-- 证书资质 - 移动端单列大图优化 -->
     <section class="py-20 px-6 bg-[#f2f7f2]">
         <div class="max-w-5xl mx-auto" data-aos="fade-up" data-aos-duration="1500">
             <h3 class="text-xs tracking-[0.4em] text-gray-400 mb-12 text-center uppercase font-bold">Certificates / 证书资质</h3>
@@ -284,7 +271,6 @@
     <section id="experience" class="py-24 md:py-32 px-6 md:px-10 bg-white">
         <div class="max-w-4xl mx-auto">
             <h3 class="text-xs tracking-[0.4em] text-gray-400 mb-20 text-center uppercase font-bold">Work Experience / 履历详情</h3>
-
             <div class="space-y-24">
                 <div class="relative pl-12 resume-line" data-aos="fade-up" data-aos-duration="1500">
                     <div class="absolute -left-[4px] top-0 w-2 h-2 rounded-full bg-[#2d5a3f]"></div>
@@ -353,7 +339,7 @@
         <div class="mt-20 text-[10px] text-gray-300 tracking-[0.5em] uppercase">© 2026 JINGWEN · ALL RIGHTS RESERVED</div>
     </footer>
 
-    <!-- 课程研发 Modal (移动端全屏) -->
+    <!-- 课程研发 Modal -->
     <div x-show="openModal === 'course'" x-cloak class="fixed inset-0 z-[100] glass flex items-center justify-center p-0 md:p-8" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
         <div class="portfolio-modal w-full max-w-7xl h-[90vh] md:h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative" @click.away="openModal = null" x-transition:enter="transition ease-out duration-700 delay-100" x-transition:enter-start="opacity-0 scale-95 translate-y-8" x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             <button @click="openModal = null" class="absolute top-5 right-5 md:top-6 md:right-6 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full hover:bg-[#2d5a3f] hover:text-white transition-all duration-300 text-gray-600 shadow-lg group">
@@ -371,7 +357,6 @@
             </div>
 
             <div class="flex-1 overflow-y-auto px-6 md:px-10 pb-8 md:pb-10">
-                <!-- 职场新人进阶课 -->
                 <div class="mb-12">
                     <h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
                         <span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">01</span>
@@ -419,7 +404,7 @@
         </div>
     </div>
 
-    <!-- AI Modal (职道了链接已确认为最新 vercel 站点) -->
+    <!-- AI Modal (职道了链接已确保为最新 Vercel 站点) -->
     <div x-show="openModal === 'ai'" x-cloak class="fixed inset-0 z-[100] glass flex items-center justify-center p-0 md:p-8" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
         <div class="portfolio-modal w-full max-w-6xl h-[90vh] md:h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative" @click.away="openModal = null" x-transition:enter="transition ease-out duration-700 delay-100" x-transition:enter-start="opacity-0 scale-95 translate-y-8" x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             <button @click="openModal = null" class="absolute top-5 right-5 md:top-6 md:right-6 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full hover:bg-[#2d5a3f] hover:text-white transition-all duration-300 text-gray-600 shadow-lg group"><i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i></button>
@@ -433,7 +418,6 @@
                     <div>
                         <h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">01</span>「职道了」职业诊断平台</h4>
                         <p class="text-sm text-gray-500 mb-4">独立开发的职业迷茫解决方案，融合盖洛普才干、MBTI与霍兰德兴趣测评。</p>
-                        <!-- 链接已更新为最新 Vercel 在线站点 -->
                         <a href="https://zhidaole.vercel.app" target="_blank" class="link-card block p-4 rounded-[16px] mb-6 group">
                             <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="w-10 h-10 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center"><i class="fas fa-external-link-alt text-[#2d5a3f]"></i></div><div><p class="font-medium text-gray-800">访问网站</p><p class="text-xs text-gray-400">zhidaole.vercel.app</p></div></div><i class="fas fa-arrow-right text-[#2d5a3f] group-hover:translate-x-2 transition-transform"></i></div>
                         </a>
@@ -446,7 +430,7 @@
         </div>
     </div>
 
-    <!-- 内容创作 Modal (移动端全屏 & 图片单列自动适配) -->
+    <!-- 内容创作 Modal -->
     <div x-show="openModal === 'content'" x-cloak class="fixed inset-0 z-[100] glass flex items-center justify-center p-0 md:p-8" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
         <div class="portfolio-modal w-full max-w-7xl h-[90vh] md:h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative" @click.away="openModal = null" x-transition:enter="transition ease-out duration-700 delay-100" x-transition:enter-start="opacity-0 scale-95 translate-y-8" x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             <button @click="openModal = null" class="absolute top-5 right-5 md:top-6 md:right-6 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full hover:bg-[#2d5a3f] hover:text-white transition-all duration-300 text-gray-600 shadow-lg group"><i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i></button>
@@ -461,7 +445,7 @@
         </div>
     </div>
 
-    <!-- 灯箱：独立图片放大层，关闭后不影响底层Modal状态 -->
+    <!-- 灯箱 -->
     <div x-show="lightboxImg" x-cloak class="lightbox" :class="{ 'active': lightboxImg }" @click="lightboxImg = null">
         <div class="lightbox-close" @click.stop="lightboxImg = null"><i class="fas fa-times"></i></div>
         <img :src="lightboxImg" x-show="lightboxImg" @click.stop>
