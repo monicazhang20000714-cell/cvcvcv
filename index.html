@@ -404,7 +404,7 @@
         </div>
     </div>
 
-    <!-- AI Modal (职道了链接已确保为最新 Vercel 站点) -->
+    <!-- AI Modal (职道了链接已更新为 https://zhidaole.pages.dev/) -->
     <div x-show="openModal === 'ai'" x-cloak class="fixed inset-0 z-[100] glass flex items-center justify-center p-0 md:p-8" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
         <div class="portfolio-modal w-full max-w-6xl h-[90vh] md:h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative" @click.away="openModal = null" x-transition:enter="transition ease-out duration-700 delay-100" x-transition:enter-start="opacity-0 scale-95 translate-y-8" x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             <button @click="openModal = null" class="absolute top-5 right-5 md:top-6 md:right-6 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full hover:bg-[#2d5a3f] hover:text-white transition-all duration-300 text-gray-600 shadow-lg group"><i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i></button>
@@ -418,8 +418,9 @@
                     <div>
                         <h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center"><span class="w-8 h-8 rounded-full bg-[#2d5a3f] text-white flex items-center justify-center text-sm mr-3">01</span>「职道了」职业诊断平台</h4>
                         <p class="text-sm text-gray-500 mb-4">独立开发的职业迷茫解决方案，融合盖洛普才干、MBTI与霍兰德兴趣测评。</p>
-                        <a href="https://zhidaole.vercel.app" target="_blank" class="link-card block p-4 rounded-[16px] mb-6 group">
-                            <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="w-10 h-10 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center"><i class="fas fa-external-link-alt text-[#2d5a3f]"></i></div><div><p class="font-medium text-gray-800">访问网站</p><p class="text-xs text-gray-400">zhidaole.vercel.app</p></div></div><i class="fas fa-arrow-right text-[#2d5a3f] group-hover:translate-x-2 transition-transform"></i></div>
+                        <!-- 链接已更新为 https://zhidaole.pages.dev/ -->
+                        <a href="https://zhidaole.pages.dev/" target="_blank" class="link-card block p-4 rounded-[16px] mb-6 group">
+                            <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="w-10 h-10 rounded-full bg-[#2d5a3f]/10 flex items-center justify-center"><i class="fas fa-external-link-alt text-[#2d5a3f]"></i></div><div><p class="font-medium text-gray-800">访问网站</p><p class="text-xs text-gray-400">zhidaole.pages.dev</p></div></div><i class="fas fa-arrow-right text-[#2d5a3f] group-hover:translate-x-2 transition-transform"></i></div>
                         </a>
                         <div class="space-y-6"><div class="img-card cursor-pointer" @click="lightboxImg = '网站截图.png'"><img src="网站截图.png" alt="网站首页"><div class="img-info"><p class="text-sm text-gray-800">首页 - 职业确定性诊断</p></div></div>
                         <div class="grid grid-cols-2 gap-4"><div class="img-card cursor-pointer" @click="lightboxImg = '网站截图2.png'"><img src="网站截图2.png" alt="岗位百科"><div class="img-info"><p class="text-xs text-gray-800">热门岗位百科</p></div></div><div class="img-card cursor-pointer" @click="lightboxImg = '网站截图3.png'"><img src="网站截图3.png" alt="诊断中心"><div class="img-info"><p class="text-xs text-gray-800">三位一体诊断中心</p></div></div></div></div>
